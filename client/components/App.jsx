@@ -1,29 +1,27 @@
 import React from 'react';
+import Popup from './Popup.jsx';
 
 import './reset.scss';
 import './App.scss';
 
 
-function getAmountVal(arr, prop) {
-     let amount = 0;
-     arr.forEach((element, index) => {
-        amount += parseFloat(element[prop].replace(",", "."));
-     });   
-     return amount.toString().replace(".", ",");
-};
+function modifyStoreData(arrayToModify, that) {
+    let amount = 0;
+    arrayToModify.forEach((element, index) => {
+      const valToDate = (+element.term_remaining);
+      const valToDateDay = Math.floor(valToDate / (3600*24));
+      const valToDateMonth = Math.floor(valToDateDay / 30);  
+      element.term_remaining = `${valToDateMonth} Month ${valToDateDay} Days`;
+      amount += parseFloat(element.amount.replace(",", "."));
+    });   
+    that.setState({
+        totalAmount: amount.toString().replace(".", ",")
+    });   
+    return  arrayToModify;   
+}
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      loansData: [],
-      totalAmount: 0
-    };
-    this.createItemsView = this.createItemsView.bind(this);
-};
-
-createItemsView(arrayElem) {
-   return <div key={arrayElem.title}  className="item-elem">      
+function createItemsView(arrayElem, openPopup) {
+  return <div key={arrayElem.title}  className="item-elem">      
            <h3>{arrayElem.title}</h3>    
            <div className="item-elem-info"> 
                <p>
@@ -51,9 +49,46 @@ createItemsView(arrayElem) {
                  {arrayElem.amount} £
                </p>                                                         
            </div>                     
-           <button>Invest in Loan</button>              
+           <button onClick = {openPopup.bind(this, arrayElem.title)}>Invest in Loan</button>              
         </div> 
-}  
+} 
+
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      loansData: [],
+      totalAmount: 0,
+      openPopup: false,
+      popupItemTitle: "",
+      popupItemAvailible: "",
+      popupItemTerm: "",
+    };
+    this.modifyAmount = this.modifyAmount.bind(this);
+    this.openPopup = this.openPopup.bind(this);
+    this.closePopup = this.closePopup.bind(this);
+};
+
+
+modifyAmount(value) {
+    this.setState({
+      totalAmount: value 
+    });
+}
+
+openPopup(title) {
+  this.setState({
+      openPopup: true,
+      popupItemTitle: title 
+   });
+
+}
+closePopup(title) {
+  this.setState({
+      openPopup: false
+   });
+
+}
 
 componentDidMount() {
 
@@ -61,26 +96,12 @@ componentDidMount() {
       async function fetchAsync() {
         let response = await fetch("http://localhost:9000/json/current-loans.json");
         let data = await response.json();
-
-         data.loans.forEach((x, index) => {
-           const valToDate = +x.term_remaining;
-           const valToDateDay = new Date(valToDate).getDay();
-           const valToDateMonth = new Date(valToDate).getMonth();   
-           const valToDateYear = new Date(valToDate).getFullYear();  
-           const valToTime = `${new Date(valToDate).getHours()}:${new Date(valToDate).getMinutes()}`;
-           x.term_remaining = ` ${valToDateDay}/${valToDateMonth}/${valToDateYear} ${valToTime}`;
-           return  x;
-         });   
-
-          that.setState({
-              loansData: data.loans
-          });
-
-          that.setState({
-              totalAmount: getAmountVal(data.loans, "amount")
-          });          
-
-          return data;
+         
+        modifyStoreData(data.loans, that)
+        that.setState({
+            loansData: data.loans
+        });
+        return data;
       }
 
       fetchAsync();
@@ -90,16 +111,20 @@ componentDidMount() {
 render() {
 
     const listItems = this.state.loansData.map((elem, index ) => 
-        this.createItemsView(elem)    
+      createItemsView(elem, this.openPopup)    
     );
 
     return (
       <div className="general-container">
         <div className="loan-items-container"> 
           <h2>Current loans</h2>
-           {listItems}
+          {listItems}
         </div> 
         <p className="loan-total-amount">Total amount, avalible for investments: <strong> £ {this.state.totalAmount} </strong> </p>   
+        <Popup 
+          popupCallBack={this.modifyAmount} 
+          popupItemTitle={this.state.popupItemTitle}
+            />
       </div>
     );
   }
