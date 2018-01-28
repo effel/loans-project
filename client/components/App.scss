@@ -1,4 +1,106 @@
-body {
-    background: ccc
-} 
+//variables
 
+$white: #fff;
+$gray-light: #cacaca;
+$gray-light-darker: #ccc;
+$gray-light-general: #eee;
+$gray-font-color: #2a2a2a;
+$gray-dark: #333;
+$gray-dark-lighter: #666;
+$bp-small: "(max-width: 600px)";
+$bp-middle: "(max-width: 900px)";
+$bp-large: "(max-width: 1600px)";
+
+@import 'mixins';
+
+html {
+	font-size: 10px;
+}
+
+body {
+    background: $gray-light-general;
+    color: $gray-font-color;
+    box-sizing: border-box;
+    font-size: 1.6rem;
+    font-family: Helvetica Neue,Helvetica,Arial,sans-serif; 
+} 
+button {
+	padding: 0.3rem 1.5rem;
+	color: $white;
+	font-weight: bold;
+	background: $gray-dark;
+	border: none;
+	cursor: pointer;
+
+	&.big-btn {
+	    padding: 0.3rem 1rem;
+	    font-size: 1.8rem;		
+	}
+}
+
+
+.general-container {
+    min-height: 100vh;
+    max-width: 60%;
+    margin: 0 auto;
+    @include bp($bp-middle) {
+        max-width: 95%;
+    }    
+}
+
+.loan-items-container {
+	padding: 3rem 0;
+}
+
+h2 {
+	margin: 0 0 2rem;
+	font-size: 2.8rem;
+	font-weight: bold;
+}
+h3 {
+	margin: 0 0 1rem;	
+	font-size: 1.8rem;
+	font-weight: bold;
+}
+.item-elem {
+    position: relative;
+    min-height: 12vh;
+    margin: 1rem 0;
+    padding: 1rem 17rem 1rem 1.5rem;
+    background: $gray-light;
+    @include bp($bp-small) {
+        padding-right: 1rem;
+    }      
+    .item-elem-info {
+	    display: grid;   
+	    grid-template-columns: 50% 50%;
+	    @include bp($bp-small) {
+	        padding-right: 1rem;
+	        grid-template-columns: 100%
+	    }   	    
+    }
+    span {
+    	display: inline-block;
+    	margin: 0 0.5rem 0 0;
+    	padding: 0.3rem 0.5rem;
+    	font-size: 1.2rem;
+    	font-weight: bold;
+    	color: $white;
+    	background: $gray-dark-lighter; 
+    	border-radius: 5px;
+    	vertical-align: middle;
+    }
+    p {
+    	padding: 0.3rem 0;
+    	font-size: 1.4rem;
+    	vertical-align: middle;
+    }
+    button {
+    	position: absolute;
+    	right: 1.5rem;
+    	bottom: 1rem;
+    }
+}
+.loan-total-amount {
+	text-align: center;
+}
