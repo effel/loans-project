@@ -1,5 +1,31 @@
 //popup styles
 
+@import '_reset';
+@import '_variables';
+@import '_mixins';
+
+
 .popup-container {
-    
+    width: 95%;
+    max-width: 40rem;
+    padding: 1.5rem;
+    background: $gray-light-general;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 4;
+
+    .popup-info {
+        padding: 2rem 0;
+    }
+    .close-popup-btn {
+        position: absolute;
+        right: 1.5rem;
+        top: 1.5rem;
+    }
+    .form-item {
+        display: grid; 
+        grid-template-columns: 70% 30%;  
+    }
 }

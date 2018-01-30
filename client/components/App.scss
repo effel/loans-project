@@ -1,17 +1,6 @@
-//variables
-
-$white: #fff;
-$gray-light: #cacaca;
-$gray-light-darker: #ccc;
-$gray-light-general: #eee;
-$gray-font-color: #2a2a2a;
-$gray-dark: #333;
-$gray-dark-lighter: #666;
-$bp-small: "(max-width: 600px)";
-$bp-middle: "(max-width: 900px)";
-$bp-large: "(max-width: 1600px)";
-
-@import 'mixins';
+@import '_reset';
+@import '_variables';
+@import '_mixins';
 
 html {
 	font-size: 10px;
@@ -37,7 +26,10 @@ button {
 	    font-size: 1.8rem;		
 	}
 }
-
+input[type="text"] {
+	border: none;
+	padding: 0.3rem;
+}
 
 .general-container {
     min-height: 100vh;

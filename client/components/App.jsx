@@ -1,7 +1,6 @@
 import React from 'react';
 import Popup from './Popup.jsx';
 
-import './reset.scss';
 import './App.scss';
 
 
@@ -49,7 +48,7 @@ function createItemsView(arrayElem, openPopup) {
                  {arrayElem.amount} £
                </p>                                                         
            </div>                     
-           <button onClick = {openPopup.bind(this, arrayElem.title)}>Invest in Loan</button>              
+           <button onClick = {openPopup.bind(this, arrayElem)}>Invest in Loan</button>              
         </div> 
 } 
 
@@ -60,34 +59,53 @@ class App extends React.Component {
       loansData: [],
       totalAmount: 0,
       openPopup: false,
-      popupItemTitle: "",
-      popupItemAvailible: "",
-      popupItemTerm: "",
+      popupData: {
+        popupItemTitle: "",
+        popupItemAvailible: "",
+        popupItemTerm: ""}
     };
     this.modifyAmount = this.modifyAmount.bind(this);
     this.openPopup = this.openPopup.bind(this);
     this.closePopup = this.closePopup.bind(this);
+    this.renderPopup = this.renderPopup.bind(this);
 };
 
 
-modifyAmount(value) {
+modifyAmount(value, event) {
+   event.preventDefault();
     this.setState({
-      totalAmount: value 
+      totalAmount: value,
+      openPopup: false
     });
+    
 }
 
-openPopup(title) {
+openPopup(item) {
   this.setState({
       openPopup: true,
-      popupItemTitle: title 
-   });
+      popupData: {
+        popupItemTitle : item.title,
+        popupItemAvailible : item.available,
+        popupItemTerm : item.term_remaining       
+      } 
+
+  });
 
 }
 closePopup(title) {
   this.setState({
       openPopup: false
-   });
-
+  });
+}
+renderPopup(item) {
+   if (this.state.openPopup) {
+        return <Popup 
+          popupCallBack={this.modifyAmount} 
+          popupItemData={this.state.popupData}
+          closePopup={this.closePopup}
+          />
+ 
+   }
 }
 
 componentDidMount() {
@@ -121,11 +139,9 @@ render() {
           {listItems}
         </div> 
         <p className="loan-total-amount">Total amount, avalible for investments: <strong> £ {this.state.totalAmount} </strong> </p>   
-        <Popup 
-          popupCallBack={this.modifyAmount} 
-          popupItemTitle={this.state.popupItemTitle}
-            />
+        {this.renderPopup()}    
       </div>
+
     );
   }
 }
