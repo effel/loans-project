@@ -9,6 +9,7 @@
     width: 95%;
     max-width: 40rem;
     padding: 1.5rem;
+    font-size: 1.4rem;
     background: $gray-light-general;
     position: fixed;
     top: 50%;
@@ -25,6 +26,7 @@
         top: 1.5rem;
     }
     .form-item {
+        margin: 0.5rem 0 0;
         display: grid; 
         grid-template-columns: 70% 30%;  
     }

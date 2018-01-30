@@ -9,7 +9,11 @@ class Popup extends React.Component {
 };
 
 handleChange(event) {
-    this.setState({value: event.target.value});
+    if (!isNaN(event.target.value)) {
+      this.setState({value: event.target.value});      
+    } else {
+       alert("You could input numbers only!!!")
+    }
 }
 
 render() {
@@ -27,7 +31,7 @@ render() {
               <form>
                  <label>Investment amount (£)</label>
                  <div className="form-item">
-                    <input type="text" onChange={this.handleChange} placeholder="Investment amount"/>
+                    <input type="text" onBlur={this.handleChange} placeholder="Investment amount"/>
                     <button className="big-btn" onClick = {this.props.popupCallBack.bind(this, this.state.value)}>Invest now</button>                 
                  </div>
               </form>              
