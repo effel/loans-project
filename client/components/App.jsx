@@ -10,7 +10,7 @@ function formatAmount(amount) {
 function modifyStoreData(arrayToModify, that) {
     let amount = 0;
     arrayToModify.forEach((element, index) => {
-      const valToDate = (+element.term_remaining)*10;
+      const valToDate = (+element.term_remaining);
       const valToDateDay = Math.floor(valToDate / (3600*24));
       const valToDateMonth = Math.floor(valToDateDay / 30);  
       element.id = Math.random().toString(36).substr(2, 16);;
@@ -90,22 +90,26 @@ class App extends React.Component {
 
 
 modifyAmount(popupData) {
-    let newTotalAmount = +(this.state.totalAmount.replace(",", ".")) + +(popupData.value); 
-    const editedLoanData = this.state.loansData.find((item, index) => {
-       if (item.id === popupData.itemId) {
-          const amountNumber = parseFloat(item.amount.replace(",", ".")) + +(popupData.value); 
-          item.invested="true";
-          item.amount = amountNumber.toFixed(3).toString().replace(".", ",");
-       }
-    });
+   let newTotalAmount=this.state.totalAmount; 
 
-    this.setState({
-      totalAmount: newTotalAmount.toFixed(3).toString().replace(".", ",")
-    });     
+    if (+(popupData.value) > 0) {
+      const editedLoanData = this.state.loansData.find((item, index) => {
+         if (item.id === popupData.itemId) {
+            const amountNumber = parseFloat(item.amount.replace(",", ".")) + +(popupData.value); 
+            item.invested="true";
+            item.amount = amountNumber.toFixed(3).toString().replace(".", ",");
+            newTotalAmount = (+(this.state.totalAmount.replace(",", ".")) + +(popupData.value)).toFixed(3).toString().replace(".", ","); 
+         }
+      });
+
+      this.setState({
+        totalAmount: newTotalAmount
+      });        
+    }
+   
     this.setState({
       openPopup: false
     }); 
-    return false;
 }
 
 openPopup(item) {
