@@ -3,14 +3,19 @@ import Popup from './Popup.jsx';
 
 import './App.scss';
 
+function formatAmount(amount) {
+
+}
 
 function modifyStoreData(arrayToModify, that) {
     let amount = 0;
     arrayToModify.forEach((element, index) => {
-      const valToDate = (+element.term_remaining);
+      const valToDate = (+element.term_remaining)*10;
       const valToDateDay = Math.floor(valToDate / (3600*24));
       const valToDateMonth = Math.floor(valToDateDay / 30);  
+      element.id = Math.random().toString(36).substr(2, 16);;
       element.term_remaining = `${valToDateMonth} Month ${valToDateDay} Days`;
+      element.invested = false;
       amount += parseFloat(element.amount.replace(",", "."));
     });   
     that.setState({
@@ -19,8 +24,21 @@ function modifyStoreData(arrayToModify, that) {
     return  arrayToModify;   
 }
 
+function isInvested(value) {
+   if (value) {
+      return <span className="label">value</span>;
+   }
+}
+function IsInvested(isInvested) {
+  const templ = (isInvested.isInvested === "true") ?  <div className="label">Invested</div> : "";
+  debugger;
+  return (
+    templ
+  );
+}
+
 function createItemsView(arrayElem, openPopup) {
-  return <div key={arrayElem.title}  className="item-elem">      
+  return <div key={arrayElem.id}  className="item-elem">      
            <h3>{arrayElem.title}</h3>    
            <div className="item-elem-info"> 
                <p>
@@ -46,7 +64,8 @@ function createItemsView(arrayElem, openPopup) {
                <p>
                  <span>Amount:</span>
                  {arrayElem.amount} £
-               </p>                                                         
+               </p> 
+               <IsInvested isInvested={arrayElem.invested} />    
            </div>                     
            <button onClick = {openPopup.bind(this, arrayElem)}>Invest in Loan</button>              
         </div> 
@@ -62,7 +81,8 @@ class App extends React.Component {
       popupData: {
         popupItemTitle: "",
         popupItemAvailible: "",
-        popupItemTerm: ""}
+        popupItemTerm: "",
+        popupItemId: "",      }
     };
     this.modifyAmount = this.modifyAmount.bind(this);
     this.openPopup = this.openPopup.bind(this);
@@ -71,13 +91,17 @@ class App extends React.Component {
 };
 
 
-modifyAmount(value, event) {
-   event.preventDefault();
-    this.setState({
-      totalAmount: value,
-      openPopup: false
+modifyAmount(popupData) {
+    const editedLoanData = this.state.loansData.find((item, index) => {
+       if (item.id === popupData.itemId) {
+          item.invested="true";
+          item.amount = (parseFloat(item.amount.replace(",", ".")) + +(popupData.value)).toString().replace(".", ","); 
+       }
     });
-    
+    this.setState({
+      openPopup: false
+    }); 
+    return false;
 }
 
 openPopup(item) {
@@ -86,7 +110,8 @@ openPopup(item) {
       popupData: {
         popupItemTitle : item.title,
         popupItemAvailible : item.available,
-        popupItemTerm : item.term_remaining       
+        popupItemTerm : item.term_remaining,
+        popupItemId : item.id   
       } 
 
   });

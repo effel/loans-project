@@ -4,13 +4,18 @@ import './Popup.scss';
 class Popup extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {value: ''};
+    this.state = { popupResultData: {value: '', itemId:''}};
     this.handleChange = this.handleChange.bind(this);
 };
 
 handleChange(event) {
     if (!isNaN(event.target.value)) {
-      this.setState({value: event.target.value});      
+      this.setState({
+        popupResultData : {
+          value : event.target.value,
+          itemId: this.props.popupItemData.popupItemId
+        }
+      });      
     } else {
        alert("You could input numbers only!!!")
     }
@@ -32,7 +37,7 @@ render() {
                  <label>Investment amount (£)</label>
                  <div className="form-item">
                     <input type="text" onBlur={this.handleChange} placeholder="Investment amount"/>
-                    <button className="big-btn" onClick = {this.props.popupCallBack.bind(this, this.state.value)}>Invest now</button>                 
+                    <button className="big-btn" onClick = {this.props.popupCallBack.bind(this, this.state.popupResultData)}>Invest now</button>                 
                  </div>
               </form>              
             </div>                       
