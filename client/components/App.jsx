@@ -30,10 +30,8 @@ function isInvested(value) {
    }
 }
 function IsInvested(isInvested) {
-  const templ = (isInvested.isInvested === "true") ?  <div className="label">Invested</div> : "";
-  debugger;
   return (
-    templ
+    (isInvested.isInvested === "true") ?  <div className="label">Invested</div> : ""
   );
 }
 
@@ -92,12 +90,18 @@ class App extends React.Component {
 
 
 modifyAmount(popupData) {
+    let newTotalAmount = +(this.state.totalAmount.replace(",", ".")) + +(popupData.value); 
     const editedLoanData = this.state.loansData.find((item, index) => {
        if (item.id === popupData.itemId) {
+          const amountNumber = parseFloat(item.amount.replace(",", ".")) + +(popupData.value); 
           item.invested="true";
-          item.amount = (parseFloat(item.amount.replace(",", ".")) + +(popupData.value)).toString().replace(".", ","); 
+          item.amount = amountNumber.toFixed(3).toString().replace(".", ",");
        }
     });
+
+    this.setState({
+      totalAmount: newTotalAmount.toFixed(3).toString().replace(".", ",")
+    });     
     this.setState({
       openPopup: false
     }); 
